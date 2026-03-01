@@ -1,42 +1,4 @@
 services:
-  reverse-proxy:
-    image: nginx:alpine
-    extra_hosts:
-      - "host.docker.internal:host-gateway" # added this to work with fe not being a container
-    ports:
-      - "8080:8080"
-      - "8443:8443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/etc/nginx/certs:ro
-      - ./logs:/var/log/nginx
-    depends_on:
-      - web-app
-      # - todo-fe
-    networks:
-      - todo-network
-
-  # todo-fe:
-  #   build: ./todo-frontend
-  #   restart: always
-  #   networks:
-  #     - todo-network
-
-  web-app:
-    build: ./todo-server
-    restart: always
-    deploy:
-      replicas: 2
-    environment:
-      - DB_HOST=db-master
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_NAME=${POSTGRES_DB}
-      - DB_PORT=5432
-      - JWT_SECRET=${JWT_SECRET}
-    networks:
-      - todo-network
-
   db-master:
     image: bitnami/postgresql:latest
     environment:
@@ -67,18 +29,11 @@ services:
     networks:
       - todo-network
 
-
-  log-analyzer:
-    image: allinurl/goaccess:latest
-    volumes:
-      - ./logs:/opt/goaccess/logs
-    command: goaccess /opt/goaccess/logs/access.log --log-format=COMBINED --real-time-html -o /opt/goaccess/logs/report.html
-    ports:
-      - "7890:7890"
-    networks:
-      - todo-network
   pgadmin:
     image: dpage/pgadmin4
+    depends_on:
+      - db-master
+      - db-slave
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=pass
@@ -87,8 +42,64 @@ services:
     networks:
       - todo-network
 
-  
 
+  web-app:
+    build: ./todo-server
+    restart: always
+    depends_on:
+      - db-master
+      - db-slave
+    deploy:
+      replicas: 2
+    environment:
+      - DB_HOST=db-master
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=5432
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - todo-network
+
+  # todo-fe:
+  #   build: ./todo-frontend
+  #   restart: always
+  #   networks:
+  #     - todo-network
+
+  log-analyzer:
+    image: allinurl/goaccess:latest
+    container_name: log-analyzer
+    restart: always
+    networks:
+      - todo-network
+    ports:
+      - "7890:7890"
+    volumes:
+      - nginx-logs:/opt/goaccess/logs:ro
+      - log-report:/var/www/html
+    entrypoint: ["goaccess", "/opt/goaccess/logs/access.log", "--log-format=COMBINED", "--real-time-html", "--addr=0.0.0.0", "--port=7890", "--ws-url=wss://localhost:8443/ws", "--output=/var/www/html/index.html"]
+
+  reverse-proxy:
+    image: nginx:alpine
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # added this to work with fe not being a container
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+      - nginx-logs:/var/log/nginx
+      - log-report:/usr/share/nginx/html/reports:ro
+    depends_on:
+      - web-app
+      # - todo-fe
+      - log-analyzer
+    networks:
+      - todo-network
+
+      
 networks:
   todo-network:
     driver: bridge
@@ -96,3 +107,5 @@ networks:
 volumes:
   db-master-data:
   db-slave-data:
+  nginx-logs:
+  log-report:
