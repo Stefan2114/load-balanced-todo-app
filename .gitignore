@@ -1,0 +1,20 @@
+# Security
+.env
+certs/*.pem
+certs/*.key
+
+# Databases & Persistence
+db-master-data/
+db-slave-data/
+
+# Logs and Analytics
+logs/
+*.log
+
+# Dependencies
+node_modules/
+vendor/
+
+# OS specific
+.DS_Store
+Thumbs.db
