@@ -1,0 +1,119 @@
+:root {
+  --bg-main: #f4f5f7;        /* Light grey background like Jira */
+  --bg-column: #ebedf0;      /* Slightly darker column background */
+  --bg-card: #ffffff;
+  --text-main: #172b4d;      /* Deep navy for high contrast text */
+  --text-subtle: #5e6c84;    /* Grey for secondary text */
+  --primary: #0052cc;        /* Standard Jira Blue */
+  --primary-hover: #0747a6;
+  --border: #dfe1e6;
+  --shadow: 0 1px 2px 0 rgba(9, 30, 66, 0.25);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+.App { padding: 40px; }
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+header h1 { font-size: 24px; font-weight: 600; color: var(--text-main); }
+
+/* Create Task Area */
+form {
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 15px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  margin-bottom: 30px;
+}
+
+input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+
+input:focus { border-color: var(--primary); }
+
+button {
+  background: var(--primary);
+  color: white;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover { background: var(--primary-hover); }
+
+/* Board & Columns */
+.board {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.column {
+  background-color: var(--bg-column);
+  border-radius: 3px;
+  width: 300px;
+  padding: 10px;
+  min-height: 500px;
+}
+
+.column h3 {
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 5px 0 15px 5px;
+}
+
+/* Cards */
+.task-card {
+  background: var(--bg-card);
+  border-radius: 3px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.task-card:hover { background: #f4f5f7; }
+
+.task-text {
+  font-size: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+/* Small Arrow Buttons inside cards */
+.task-card button {
+  background: transparent;
+  color: var(--text-subtle);
+  padding: 2px 6px;
+  font-size: 16px;
+}
+
+.task-card button:hover {
+  background: rgba(9, 30, 66, 0.08);
+  color: var(--text-main);
+}
