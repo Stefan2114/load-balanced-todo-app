@@ -12,11 +12,10 @@ const CreateTask = ({ onRefresh }: { onRefresh: () => void }) => {
     }
 
     try {
-      // Default status is 'To Do' as required by your Go model
       await api.post("/tasks", { title, status: "To Do" });
       setTitle("");
       setError("");
-      onRefresh(); // Refresh the board
+      onRefresh();
     } catch (err) {
       setError("Failed to create task");
     }

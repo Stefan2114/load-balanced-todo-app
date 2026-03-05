@@ -21,7 +21,6 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	// Get user_id from the AuthMiddleware
 	userID, _ := c.Get("user_id")
 	input.UserID = userID.(uint)
 

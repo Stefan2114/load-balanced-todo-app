@@ -33,7 +33,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Hash the password
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	input.Password = string(hashedPassword)
 
@@ -72,7 +71,5 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Requirement: Preserve sessions
-	// We send the token so the frontend can store it and send it in the Authorization header
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }

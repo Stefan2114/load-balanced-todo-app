@@ -7,8 +7,8 @@ const Auth = ({ onLogin }: { onLogin: () => void }) => {
   const [error, setError] = useState("");
 
   const validate = () => {
-    if (form.username.length < 4) return "Username must be at least 4 chars";
-    if (form.password.length < 8) return "Password must be at least 8 chars";
+    if (form.username.length < 2) return "Username must be at least 2 chars";
+    if (form.password.length < 4) return "Password must be at least 4 chars";
     return null;
   };
 
