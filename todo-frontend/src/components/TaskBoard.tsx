@@ -37,16 +37,14 @@ const TaskBoard = () => {
         title: task.title,
         status: statuses[newIndex],
       });
-      fetchTasks(); // Refresh the board to show the move
+      fetchTasks();
     }
   };
 
   return (
     <div className="container">
-      {/* 1. The Add Task Form at the top */}
       <CreateTask onRefresh={fetchTasks} />
 
-      {/* 2. The 3-Column Board  */}
       <div className="board">
         {statuses.map((status) => (
           <div key={status} className="column">
@@ -56,7 +54,6 @@ const TaskBoard = () => {
               .filter((t) => t.status === status)
               .map((task) => (
                 <div key={task.ID} className="task-card">
-                  {/* Left Arrow Button */}
                   {status !== "To Do" && (
                     <button
                       onClick={(e) => {
@@ -68,7 +65,6 @@ const TaskBoard = () => {
                     </button>
                   )}
 
-                  {/* Truncated Title - Clicking opens the modal  */}
                   <div
                     className="task-text"
                     onClick={() => setSelectedTask(task)}
@@ -78,7 +74,6 @@ const TaskBoard = () => {
                       : task.title}
                   </div>
 
-                  {/* Right Arrow Button */}
                   {status !== "Done" && (
                     <button
                       onClick={(e) => {
@@ -95,7 +90,6 @@ const TaskBoard = () => {
         ))}
       </div>
 
-      {/* 3. The Edit/Delete Modal (Box over screen) */}
       {selectedTask && (
         <TaskModal
           task={selectedTask}
