@@ -7,7 +7,6 @@ import (
 	"todo-server/models"
 	"todo-server/services"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,14 +27,6 @@ func main() {
 	services.DB.AutoMigrate(&models.User{}, &models.Task{})
 
 	r := gin.Default()
-
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}))
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

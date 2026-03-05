@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
+# RUN npx vite build
 
 # Production stage: Serve with Nginx (inside the container)
 FROM nginx:alpine

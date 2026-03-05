@@ -10,7 +10,18 @@ import (
 
 func GetTasks(c *gin.Context) {
 	var tasks []models.Task
-	services.DB.Find(&tasks)
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	if err := services.DB.Where("user_id = ?", userID).Find(&tasks).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not fetch tasks"})
+		return
+	}
+
 	c.JSON(http.StatusOK, tasks)
 }
 
